@@ -1,7 +1,8 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 
 import api from '../services/api';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const AuthContext = createContext({});
 
@@ -11,6 +12,33 @@ function AuthProvider({ children }){
 
   const navigation = useNavigation();
 
+  useEffect(() => {
+    async function loadStorage(){
+      const storageUser = await AsyncStorage.getItem('@finToken');
+
+      if(storageUser) {
+        const response = await api.get('/me', {
+          headers: {
+            'Authorization': 'Bearer ${storageUser}'
+          }
+        })
+        .catch(() =>{
+          setUser(null);
+        })
+
+        api.defaults.headers['Authorization'] = `Bearer ${storageUser}`;
+        setUser(response.data);
+        setLoadingAuth(false);
+      }
+      loadStorage();
+    }
+  })
+
+  async function signOut(){
+    await AsyncStorage.clear().then(() => {
+      setUser(null);
+    })
+  }
 
   async function signUp(email, password, nome){
     setLoadingAuth(true);
@@ -43,13 +71,7 @@ function AuthProvider({ children }){
 
       const { id, name, token } = response.data;
 
-      const data = {
-        id,
-        name,
-        token,
-        email,
-      };
-
+      await AsyncStorage.setItem('@finToken', token); 
       api.defaults.headers['Authorization'] = `Bearer ${token}`;
 
       setUser({
@@ -68,7 +90,7 @@ function AuthProvider({ children }){
   }
 
   return(
-    <AuthContext.Provider value={{ signed: !!user, user, signUp, signIn, loadingAuth }}>
+    <AuthContext.Provider value={{ signed: !!user, user, signUp, signIn, signOut, loadingAuth }}>
       {children}
     </AuthContext.Provider>
   )
