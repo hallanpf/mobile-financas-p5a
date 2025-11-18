@@ -3,8 +3,9 @@ import styled from 'styled-components/native';
 export const RegisterContainer = styled.View`
   flex-direction: row;
   width: 100%;
-  padding-left: 5%;
-  padding-right: 5%;
+  padding-left: 0px;
+  padding-right: 0px;
+  margin-bottom: 12px;
   justify-content: space-between;
   align-items: center;
 `;

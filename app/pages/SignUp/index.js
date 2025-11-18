@@ -47,6 +47,8 @@ export default function SignUp(){
             placeholder="Seu email"
             value={email}
             onChangeText={ (text) => setEmail(text) }
+            keyboardType="email-address"
+            autoCapitalize="none"
           />
         </AreaInput>
 
