@@ -8,7 +8,7 @@ import {
   Input, 
   SubmitButton, 
   SubmitText
-} from '../SignIn/styles';
+} from '../signIn/styles';
 
 import { AuthContext } from '../../context/auth';
 
