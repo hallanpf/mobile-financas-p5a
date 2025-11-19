@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext, useCallback, useRef } from 'react';
-import { View, Text, FlatList, ActivityIndicator, Alert, ScrollView, Dimensions } from 'react-native';
+import { View, Text, FlatList, ActivityIndicator, Alert, ScrollView, Dimensions, Platform } from 'react-native';
 import ReceiveItem from '../../components/ReceiveItem';
 import { AuthContext } from '../../context/auth';
 import { useFocusEffect } from '@react-navigation/native';
@@ -27,6 +27,23 @@ export default function Home(){
     const id = item && (item._id || item.id || item.item_id || item.itemId || item.uuid);
     if(!id){
       Toast.show({ type: 'error', text1: 'ID do registro não encontrado' });
+      return;
+    }
+    // On web, `Alert.alert` may not render a confirmation dialog. In that
+    // case proceed to delete immediately. On native platforms show the alert.
+    if(Platform.OS === 'web'){
+      try{
+        const ok = await removeReceive(item);
+        if(ok){
+          Toast.show({ type: 'success', text1: 'Registro excluído' });
+        }else{
+          Toast.show({ type: 'error', text1: 'Não foi possível excluir o registro' });
+        }
+      }catch(err){
+        const msg = err && err.response && (err.response.data && (err.response.data.message || err.response.data.error)) ?
+          (err.response.data.message || err.response.data.error) : (err.message || 'Erro ao excluir registro');
+        Toast.show({ type: 'error', text1: msg });
+      }
       return;
     }
 

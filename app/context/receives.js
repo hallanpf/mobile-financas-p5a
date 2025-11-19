@@ -56,27 +56,22 @@ export function ReceivesProvider({ children }){
       const isObject = idOrItem && typeof idOrItem === 'object';
       const item = isObject ? idOrItem : null;
       const id = isObject ? (item._id || item.id || item.item_id || item.itemId || item.uuid) : idOrItem;
-      const fallbackUserId = isObject ? (item.user_id || item.userId || item.user && item.user.id) : null;
-
-      const userId = user && user.id ? user.id : fallbackUserId;
-
       // removing receive
-
       if(!id){
         throw new Error('ID do registro não foi informado');
       }
 
-      if(!userId){
-        throw new Error('Usuário não autenticado e nenhum user_id presente no item');
-      }
-
       Toast.show({ type: 'info', text1: 'Enviando requisição de exclusão...' });
-      const res = await apiDelete(id, userId);
+      // Backend derives the requesting user from the Authorization header (JWT).
+      // We only need to send the item id to request deletion.
+      await apiDelete(id);
       Toast.show({ type: 'success', text1: 'Exclusão solicitada' });
       await loadReceives();
       return true;
     }catch(err){
-      // error deleting receive
+      const msg = err && err.response && (err.response.data && (err.response.data.message || err.response.data.error)) ?
+        (err.response.data.message || err.response.data.error) : (err.message || 'Erro ao excluir registro');
+      Toast.show({ type: 'error', text1: msg });
       return false;
     }
   }

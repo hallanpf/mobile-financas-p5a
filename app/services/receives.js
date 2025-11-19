@@ -1,4 +1,5 @@
 import api from './api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export async function getReceives(date){
   // date expected in format 'DD/MM/YYYY' or 'YYYY-MM-DD' depending on backend
@@ -19,13 +20,36 @@ export async function createReceive(payload){
   }
 }
 
-export async function deleteReceive(item_id, user_id){
+export async function deleteReceive(item_id){
   try{
-    // Use DELETE with query params to ensure compatibility with browsers/proxies
-    const response = await api.delete('/receives/delete', { params: { item_id, user_id } });
+    if(!item_id) throw new Error('item_id is required');
+
+    // Build the URL with a query string to ensure the DELETE request carries the identifier
+    const params = { item_id };
+
+    // Ensure Authorization header is present. The Auth provider normally sets
+    // `api.defaults.headers['Authorization']`, but in some cases it may be missing
+    // (app hot-reload, race conditions). Fall back to AsyncStorage token.
+    let headers = {};
+    const globalAuth = api.defaults.headers && (api.defaults.headers['Authorization'] || api.defaults.headers['authorization']);
+    if(globalAuth){
+      headers.Authorization = globalAuth;
+    }else{
+      const token = await AsyncStorage.getItem('@finToken');
+      if(token){
+        headers.Authorization = `Bearer ${token}`;
+      }
+    }
+
+    // Log the outgoing request for debugging
+    console.log('[receives.delete] DELETE', '/receives/delete', 'params=', params, 'headers=', !!headers.Authorization);
+
+    // Use axios params option (more reliable than building the query string manually)
+    const response = await api.delete('/receives/delete', { params, headers });
+
+    console.log('[receives.delete] response', response && response.status, response && response.data);
     return response.data;
   }catch(err){
-    // Propagate the original error; backend should accept query params
     throw err;
   }
 }
