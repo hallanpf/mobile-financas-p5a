@@ -23,14 +23,11 @@ export default function Home(){
   
 
   async function handleDelete(item){
-    // determine id from possible fields
     const id = item && (item._id || item.id || item.item_id || item.itemId || item.uuid);
     if(!id){
       Toast.show({ type: 'error', text1: 'ID do registro não encontrado' });
       return;
     }
-    // On web, `Alert.alert` may not render a confirmation dialog. In that
-    // case proceed to delete immediately. On native platforms show the alert.
     if(Platform.OS === 'web'){
       try{
         const ok = await removeReceive(item);
@@ -54,7 +51,6 @@ export default function Home(){
         { text: 'Cancelar', style: 'cancel' },
         { text: 'Continuar', onPress: async () => {
             try{
-              // pass the full item so ReceivesContext can fallback to item.user_id if needed
               const ok = await removeReceive(item);
               if(ok){
                 Toast.show({ type: 'success', text1: 'Registro excluído' });
@@ -76,10 +72,9 @@ export default function Home(){
   if(loadingData || loading) return <ActivityIndicator size={30} style={{ flex: 1 }} />
 
     const screenWidth = Dimensions.get('window').width;
-    // leave a peek of the next card visible (approx 56px on the right)
     const peek = 56;
     const spacing = 12;
-    const cardWidth = screenWidth - (peek + 14); // account for left padding + peek
+    const cardWidth = screenWidth - (peek + 14);
 
     const balanceCards = [
       { key: 'saldo', label: 'Saldo atual', value: balance ? balance.total : 'R$ 0,00', bg: '#3b3dbf' },

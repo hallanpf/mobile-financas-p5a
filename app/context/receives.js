@@ -34,7 +34,6 @@ export function ReceivesProvider({ children }){
       setBalance({ total: fmt(total), income: fmt(incomeSum), outcome: fmt(outcomeSum) });
 
     }catch(err){
-      // failed to load receives
     }finally{
       setLoading(false);
     }
@@ -52,18 +51,14 @@ export function ReceivesProvider({ children }){
 
   async function removeReceive(idOrItem){
     try{
-      // accept either an id string or the full item object
       const isObject = idOrItem && typeof idOrItem === 'object';
       const item = isObject ? idOrItem : null;
       const id = isObject ? (item._id || item.id || item.item_id || item.itemId || item.uuid) : idOrItem;
-      // removing receive
       if(!id){
         throw new Error('ID do registro não foi informado');
       }
 
       Toast.show({ type: 'info', text1: 'Enviando requisição de exclusão...' });
-      // Backend derives the requesting user from the Authorization header (JWT).
-      // We only need to send the item id to request deletion.
       await apiDelete(id);
       Toast.show({ type: 'success', text1: 'Exclusão solicitada' });
       await loadReceives();
@@ -77,11 +72,9 @@ export function ReceivesProvider({ children }){
   }
 
   useEffect(() => {
-    // Only load receives after auth user is available to ensure Authorization header is set
     if(user && user.id){
       loadReceives();
     }else{
-      // clear receives when no user
       setReceives([]);
     }
   },[user])

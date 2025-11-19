@@ -29,15 +29,12 @@ function AuthProvider({ children }){
     loadStorage();
   },[])
 
-  // Don't render children until we know the auth state (so providers depending on auth
-  // don't trigger authenticated requests before the Authorization header is set)
   if(loading) return null;
 
   async function signOut(){
     try{
       await AsyncStorage.removeItem('@finToken');
     }catch(e){
-      // ignore
     }
     setUser(null);
   }
@@ -55,7 +52,6 @@ function AuthProvider({ children }){
       return true;
 
     }catch(err){
-      // sign up failed
       setLoadingAuth(false);
       return false;
     }
@@ -85,7 +81,6 @@ function AuthProvider({ children }){
       return true;
 
     }catch(err){
-      // sign in failed
       setLoadingAuth(false);
       return false;
     }
