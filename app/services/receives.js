@@ -41,13 +41,11 @@ export async function deleteReceive(item_id){
       }
     }
 
-    // Log the outgoing request for debugging
-    console.log('[receives.delete] DELETE', '/receives/delete', 'params=', params, 'headers=', !!headers.Authorization);
 
     // Use axios params option (more reliable than building the query string manually)
     const response = await api.delete('/receives/delete', { params, headers });
 
-    console.log('[receives.delete] response', response && response.status, response && response.data);
+    // Request sent, return response data
     return response.data;
   }catch(err){
     throw err;

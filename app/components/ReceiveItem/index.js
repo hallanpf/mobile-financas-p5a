@@ -20,10 +20,7 @@ export default function ReceiveItem({ data, onDelete }){
 
       { onDelete && (
         <TouchableOpacity
-          onPress={() => {
-            console.log('[ReceiveItem] delete pressed', data);
-            onDelete(data);
-          }}
+          onPress={() => onDelete(data)}
           style={{ marginLeft: 8, padding: 6 }}
           hitSlop={{ top: 10, left: 10, right: 10, bottom: 10 }}
           activeOpacity={0.7}
