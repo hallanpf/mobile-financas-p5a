@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { Platform, ActivityIndicator } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 import { 
   BackGround, 
@@ -15,16 +16,19 @@ import { AuthContext } from '../../context/auth';
 
 export default function SignUp(){
 
-  const { signUp, loadingAuth } = useContext(AuthContext)
+  const { signUp, signIn, loadingAuth } = useContext(AuthContext)
 
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  function handleSignUp(){
+  async function handleSignUp(){
     if(nome === '' || email === '' || password === '') return;
 
-    signUp(email, password, nome);
+    const ok = await signUp(email, password, nome);
+    if(ok){
+      await signIn(email, password);
+    }
   }
 
   return(
