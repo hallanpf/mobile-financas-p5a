@@ -16,7 +16,7 @@ export default function App(){
         <ReceivesProvider>
           <StatusBar backgroundColor="#F0F4FF" barStyle="dark-content" />
           <Routes/>
-          <Toast />
+          <Toast position='bottom'/>
         </ReceivesProvider>
       </AuthProvider>
     </NavigationContainer>
