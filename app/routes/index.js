@@ -1,15 +1,18 @@
-import { AuthRoutes } from '../routes/auth.routes'
-import { useContext } from "react";
-import { AuthContext } from '../context/auth'
+import React, { useContext } from 'react';
+import { View, ActivityIndicator } from 'react-native';
+
+
+import AuthRoutes from './auth.routes';
 import AppRoutes from './app.routes';
+import { AuthContext } from '../context/auth';
 
 function Routes(){
-    const { signed } = useContext(AuthContext);
-    const loading = false;
+  const { signed } = useContext(AuthContext);
+  const loading = false;
 
-    return(
-        signed ? <AppRoutes/> : <AuthRoutes/>
-    )
+  return(
+    signed ? <AppRoutes/> : <AuthRoutes/>
+  )
 }
 
-export default Routes
+export default Routes;

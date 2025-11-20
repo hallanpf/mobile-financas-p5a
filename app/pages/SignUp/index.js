@@ -1,31 +1,38 @@
 import React, { useContext, useState } from 'react';
-import { Platform } from 'react-native';
-import {
-  Background, 
+import { Platform, ActivityIndicator } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+
+import { 
+  BackGround, 
   Container, 
   AreaInput, 
   Input, 
   SubmitButton, 
   SubmitText
-} from '../SignIn/styles';
+} from '../signIn/styles';
 
 import { AuthContext } from '../../context/auth';
 
+
 export default function SignUp(){
 
-  const { signUp, loadingAuth } = useContext(AuthContext)
+  const { signUp, signIn, loadingAuth } = useContext(AuthContext)
 
-  const [name, setNome] = useState('');
+  const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  function handleSignUp(){
-    if(name === '' || email === '' || password === '') return;
-    signUp(name, password, email);
+  async function handleSignUp(){
+    if(nome === '' || email === '' || password === '') return;
+
+    const ok = await signUp(email, password, nome);
+    if(ok){
+      await signIn(email, password);
+    }
   }
 
   return(
-    <Background>
+    <BackGround>
       <Container
         behavior={Platform.OS === 'ios' ? 'padding' : ''}
         enabled
@@ -33,23 +40,25 @@ export default function SignUp(){
 
         <AreaInput>
           <Input
-            placeholder="Seu nome"
-            value={name}
+            placeholder="Nome"
+            value={nome}
             onChangeText={ (text) => setNome(text) }
           />
         </AreaInput>
 
         <AreaInput>
           <Input
-            placeholder="Email"
+            placeholder="Seu email"
             value={email}
             onChangeText={ (text) => setEmail(text) }
+            keyboardType="email-address"
+            autoCapitalize="none"
           />
         </AreaInput>
 
         <AreaInput>
           <Input
-            placeholder="Senha"
+            placeholder="Sua senha"
             value={password}
             onChangeText={ (text) => setPassword(text) }
             secureTextEntry={true}
@@ -57,11 +66,17 @@ export default function SignUp(){
         </AreaInput>
 
         <SubmitButton onPress={handleSignUp}>
-          <SubmitText>Cadastrar</SubmitText>
+          {
+            loadingAuth ? (
+              <ActivityIndicator size={20} color="#FFF" />
+            ) : (
+              <SubmitText>Cadastrar</SubmitText>
+            )
+          }
         </SubmitButton>
 
       </Container>
 
-    </Background>
+    </BackGround>
   )
 }
