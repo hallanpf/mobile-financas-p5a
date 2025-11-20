@@ -1,3 +1,5 @@
+Dupla: Hallan Pedrosa Ferreira e Jhonatan Domingos da Silva
+
 # Frontend (Expo)
 
 Instalação e execução rápidas para o frontend (React Native + Expo).
