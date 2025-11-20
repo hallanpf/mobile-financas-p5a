@@ -44,6 +44,8 @@ export default function SignIn(){
             value = {email}
             placeholder="Email"
             onChangeText={ (text) => setEmail(text)}
+            keyboardType="email-address"
+            autoCapitalize="none"
           />
         </AreaInput>
 
@@ -52,6 +54,7 @@ export default function SignIn(){
             value={password}
             placeholder="Senha"
             onChangeText={ (text) => setPassword(text) }
+            secureTextEntry={true}
 
           />
         </AreaInput>
